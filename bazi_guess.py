@@ -51,4 +51,5 @@ lable2 = tk.Label(win,text="mistakes: 0")
 lable2.place(x =300,y=70)
 textt = tk.Entry(win,)
 textt.place(x =150,y=30)
+
 tk.mainloop()
