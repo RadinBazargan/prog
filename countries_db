@@ -1,0 +1,55 @@
+import tkinter as tk
+from tkinter import ttk, messagebox
+import pymysql
+
+def connection():
+    return pymysql.connect(
+        host="localhost",       
+        user="root",          
+        password="",           
+        database="countries"
+    )
+
+def fetch_country_info():
+    countryy = combo.get()
+    if not countryy:
+        messagebox.showwarning("Warning", "select a country")
+        return
+
+    try:
+        conn = connection()
+        cursor = conn.cursor()
+        cursor.execute("SELECT capital, currency, language FROM country WHERE name=%s", (countryy,))
+        result = cursor.fetchone()
+
+        if result:
+            (capital,currency,language) = result
+            result_label.config(
+                text=f"capital: {capital}\n currency: {currency}\n language: {language}"
+            )
+        else:
+            result_label.config(text="not found !")
+
+        cursor.close()
+        conn.close()
+    except :
+        messagebox.showerror("Database Error","Eror")
+
+win = tk.Tk()
+win.title("Country Info")
+win.geometry("400x300")
+
+labl = tk.Label(win, text="select a country : ", font=("bold"))
+labl.pack()
+countries = ["Iran", "Germany", "Japan", "France"]
+
+combo = ttk.Combobox(win, values=countries, font=("bold"))
+combo.pack()
+
+but = tk.Button(win, text="Enter", command=fetch_country_info, font=("bold"))
+but.pack()
+
+result_label = tk.Label(win, text="", font=("bold"))
+result_label.pack()
+
+win.mainloop()
